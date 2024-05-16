@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-PhotoAlbumsApplication<photo-albums>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.youssefrajoul.photoalbums.PhotoAlbumsApplication",
+      "projectName": "photo-albums",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
