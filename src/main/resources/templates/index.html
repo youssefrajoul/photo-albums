@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 </head>
+
 <body>
-    <h1>Home page</h1>
+    <p sec:authentication="name">anonymos</p>
+    <h1>Bienvenue sur le site.</h1>
+    <a th:href="@{/private}">Espace privé</a>
+    <form method="POST" th:action="@{/logout}" sec:authorize="isAuthenticated()">
+        <button type="submit">Logout</button>
+    </form>
 </body>
+
 </html>

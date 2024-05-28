@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Document</title>
 </head>
 
 <body>
+    <h1>Espace privé</h1>
     <p sec:authentication="name">anonymos</p>
-    <h1>Bienvenue sur le site.</h1>
-    <a th:href="@{/private}">Espace privé</a>
-    <form method="POST" th:action="@{/logout}" sec:authorize="isAuthenticated()">
+    <a th:href="@{/}">Retour à l'espace public</a>
+    <form method="POST" th:action="@{/logout}">
         <button type="submit">Logout</button>
     </form>
+
 </body>
 
 </html>

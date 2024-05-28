@@ -18,4 +18,9 @@ public class LoginController {
     public String home(Model model) {
         return "index";
     }
+
+    @GetMapping("/private")
+    public String privé() {
+        return "private";
+    }
 }
