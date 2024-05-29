@@ -25,31 +25,18 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsManager users(DataSource dataSource) {
-        UserDetails user1 = User.withUsername("prof")
-                .password("{noop}prof")
-                .authorities("PROF")
-                .build();
-
-        UserDetails user2 = User.withUsername("etudiant")
-                .password("{noop}etudiant")
-                .authorities("USER")
-                .build();
-        // InMemoryUserDetailsManager users = new InMemoryUserDetailsManager();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-
-        users.createUser(user1);
-        users.createUser(user2);
-
+        users.setUsersByUsernameQuery("select username, password, enabled from users where username=?");
+        users.setAuthoritiesByUsernameQuery("select username, authority from authority where username=?");
         return users;
     }
 
-    @Bean
-    DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-                .build();
-    }
+    // @Bean
+    // DataSource dataSource() {
+    //     return new EmbeddedDatabaseBuilder()
+    //             .setType(EmbeddedDatabaseType.H2)
+    //             .build();
+    // }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
