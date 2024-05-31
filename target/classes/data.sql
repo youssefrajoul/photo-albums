@@ -1,4 +1,4 @@
 INSERT INTO Users (username,password,enabled)
-    values ('12345','{noop}12345',true);
-INSERT INTO Authority (id,username,authority)
-    values (2,'12345','PROF');
+    values ('admin','$2a$10$XawtJaDHg6JswPRH3q.s/OrkJIIGqQVDybsasl6JlERVm4Zm6z1tG',true);
+INSERT INTO Authority (username,authority)
+    values ('admin','admin');

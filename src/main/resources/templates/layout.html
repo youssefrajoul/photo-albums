@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="https://poesi.esi-bru.be/my/" th:href="@{/}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/private}">Private</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/login}" sec:authorize="{!isAuthenticated()}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/register-form}" sec:authorize="{!isAuthenticated()}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/logout}" sec:authorize="isAuthenticated()">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" sec:authentication="name">anonymos</div>
+                </li>
+            </ul>
+        </nav>
+        <div </div>
+    </header>
+    <main layout:fragment="content">
+        Ce contenu sera remplacé par le vrai.
+    </main>
+</body>
+
+</html>

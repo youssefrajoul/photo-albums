@@ -14,8 +14,6 @@ import com.youssefrajoul.photoalbums.model.User;
 import jakarta.validation.Valid;
 import lombok.Data;
 
-
-
 @Controller
 @Data
 public class AppController {
@@ -37,17 +35,15 @@ public class AppController {
         return "private";
     }
 
-    @GetMapping("/register")
-    public String getMethodName(Model model) {
+    @GetMapping("/register-form")
+    public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";
+        return "register-form";
     }
 
-    @PostMapping("/newUser")
-    public String postMethodName(@ModelAttribute("student") @Valid User user, BindingResult bindingResult, Model model) {
-        business.addUser(user);
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute("student") @Valid User user, BindingResult bindingResult, Model model) {
+        business.signUp(user);
         return "redirect:/login";
     }
-    
-    
 }

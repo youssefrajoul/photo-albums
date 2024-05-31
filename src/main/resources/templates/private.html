@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -8,13 +9,9 @@
 </head>
 
 <body>
-    <h1>Espace privé</h1>
-    <p sec:authentication="name">anonymos</p>
-    <a th:href="@{/}">Retour à l'espace public</a>
-    <form method="POST" th:action="@{/logout}">
-        <button type="submit">Logout</button>
-    </form>
-
+    <main layout:fragment="content">
+        <h1>Admin Private Page</h1>
+    </main>
 </body>
 
 </html>
