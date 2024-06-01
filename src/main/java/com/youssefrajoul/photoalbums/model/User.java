@@ -1,5 +1,6 @@
 package com.youssefrajoul.photoalbums.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -20,4 +21,9 @@ public class User {
     @NotBlank(message = "Email cannot be blank")
     private String password;
     private boolean enabled;
+    @Column(columnDefinition = "LONGTEXT")
+    private String publicKey;
+    @Column(columnDefinition = "LONGTEXT")
+    private String encryptedPrivateKey;
+    private String salt;
 }

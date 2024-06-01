@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.youssefrajoul.photoalbums.business.Business;
+import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.User;
 
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class AppRestController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private Business service;
+    private UserService userService;
 
     public AppRestController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -36,7 +36,12 @@ public class AppRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@Valid @RequestBody User user) {
-        service.signUp(user);
+        try {
+            userService.signUp(user);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -52,7 +57,7 @@ public class AppRestController {
 
     // spring boot doc example @PostMapping("/login")
     // public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
-    //     return ResponseEntity.status(HttpStatus.CREATED).build();
+    // return ResponseEntity.status(HttpStatus.CREATED).build();
     // }
 
     @GetMapping("/test")

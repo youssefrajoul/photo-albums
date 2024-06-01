@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.youssefrajoul.photoalbums.business.Business;
+import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.User;
 
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import lombok.Data;
 public class AppController {
 
     @Autowired
-    private Business business;
+    private UserService userService;
 
     public AppController() {
 
@@ -43,7 +43,12 @@ public class AppController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("student") @Valid User user, BindingResult bindingResult, Model model) {
-        business.signUp(user);
+        try {
+            userService.signUp(user);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return "redirect:/login";
     }
 }
