@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pictures</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .picture-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .picture-container img {
+            max-width: 200px;
+            max-height: 200px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .buttons {
+            margin-top: 10px;
+        }
+
+        .buttons button {
+            margin: 5px;
+        }
+    </style>
+    <script>
+        function sharePicture(pictureId) {
+            // Implement your share functionality here
+            alert('Sharing picture with ID: ' + pictureId);
+        }
+
+        function deletePicture(pictureId) {
+            fetch('/api/pictures/' + pictureId, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Deleted picture with ID: ' + pictureId);
+                        location.reload();
+                    } else {
+                        alert('Failed to delete picture with ID: ' + pictureId);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to delete picture with ID: ' + pictureId);
+                });
+        }
+    </script>
+</head>
+<body>
+        <main layout:fragment="content">
+            <h1>Pictures</h1>
+            <div id="pictures">
+                <div th:each="picture : ${pictures}" class="picture-container">
+                    <img th:src="@{/api/picture(pictureId=${picture.getId()})}" alt="Picture" />
+                    <div class="buttons">
+                        <form th:action="@{/api/share(pictureId=${picture.getId()})}" method="post" enctype="multipart/form-data">
+                            <button type="submit">Share</button>
+                        </form>
+                        <form th:action="@{/api/delete(pictureId=${picture.getId()})}" method="post" enctype="multipart/form-data">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+</body>
+</html>

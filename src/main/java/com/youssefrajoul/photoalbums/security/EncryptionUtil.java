@@ -6,9 +6,11 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
@@ -45,8 +47,15 @@ public class EncryptionUtil {
     public static PublicKey stringToPublicKey(String encodedPublicKey) throws Exception {
         byte[] decodedKey = Base64.getDecoder().decode(encodedPublicKey);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedKey);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(keySpec);
+    }
+
+    public static PrivateKey stringToPrivateKey(String encodedPrivateKey) throws Exception {
+        byte[] decodedKey = Base64.getDecoder().decode(encodedPrivateKey);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePrivate(keySpec);
     }
 
     public static byte[] generateSalt() {

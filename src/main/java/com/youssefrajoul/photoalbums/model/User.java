@@ -1,8 +1,11 @@
 package com.youssefrajoul.photoalbums.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,4 +29,8 @@ public class User {
     @Column(columnDefinition = "LONGTEXT")
     private String encryptedPrivateKey;
     private String salt;
+    @OneToMany(mappedBy = "username")
+    private List<Picture> pictures;
+    @OneToMany(mappedBy = "username")
+    private List<Album> albums;
 }

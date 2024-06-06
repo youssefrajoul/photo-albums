@@ -15,9 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
@@ -32,14 +30,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-            MvcRequestMatcher.Builder mvc) throws Exception {
-        http.formLogin();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.formLogin(login -> login // Configure form-based login
+                .permitAll()); // Allow access to the login page for everyone
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(mvc.pattern("/private")).hasAuthority("prof")
-                .requestMatchers(mvc.pattern("/**")).permitAll());
-        // .requestMatchers(HttpMethod.POST, "/api/auth/signup/**").permitAll()
-        // .requestMatchers(HttpMethod.POST, "/api/auth/login/**").permitAll();
+                .requestMatchers(new AntPathRequestMatcher("/private")).hasAuthority("admin")
+                .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // Ensure /api is protected
+                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
         http.exceptionHandling(error -> error.accessDeniedPage("/login"));
         http.logout(logout -> logout.logoutSuccessUrl("/"));
         return http.build();
@@ -58,14 +55,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(new AntPathRequestMatcher("/api/**"))
-                .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
-    }
-
-    @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
+        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
 
     @Bean

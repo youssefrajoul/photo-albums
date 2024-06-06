@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main layout:fragment="content">
+        <form th:action="@{/api/upload}" method="post" enctype="multipart/form-data">
+        <div>
+            Choose the album:
+        </div>
+        <select name="albumId">
+            <option value="0">select option</option>
+            <option th:each="album : ${albums}" th:value="${album.getId()}" th:text="${album.getName()}"></option>
+        </select>
+        <div>
+            Choose a picture to upload (up to 10MB):
+        </div>
+            <input type="file" name="file" id="file">
+            <button type="submit">Upload</button>
+        </form>
+    </main>
+</body>
+</html>

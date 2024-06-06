@@ -34,14 +34,16 @@ public class UserService {
 
         // Generate a salt and encrypt the private key with the user's password
         byte[] salt = EncryptionUtil.generateSalt();
-        String encryptedPrivateKey = EncryptionUtil.encryptPrivateKey(privateKey, user.getPassword(), salt);
+        // String encryptedPrivateKey = EncryptionUtil.encryptPrivateKey(privateKey,
+        // user.getPassword(), salt);
 
         // Store the public key, encrypted private key, and salt in the database
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password with BCrypt
         newUser.setPublicKey(publicKey);
-        newUser.setEncryptedPrivateKey(encryptedPrivateKey);
+        // newUser.setEncryptedPrivateKey(encryptedPrivateKey);
+        newUser.setEncryptedPrivateKey(privateKey);
         newUser.setEnabled(true);
         newUser.setSalt(Base64.getEncoder().encodeToString(salt));
         userRepository.save(newUser);
@@ -50,4 +52,5 @@ public class UserService {
         authority.setAuthority("user");
         authorityRepository.save(authority);
     }
+
 }
