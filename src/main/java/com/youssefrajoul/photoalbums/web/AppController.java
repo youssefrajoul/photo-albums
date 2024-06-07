@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.youssefrajoul.photoalbums.business.AlbumService;
 import com.youssefrajoul.photoalbums.business.PictureService;
@@ -56,16 +57,20 @@ public class AppController {
         return "register-form";
     }
 
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
-        try {
-            userService.signUp(user);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return "redirect:/login";
-    }
+    // @PostMapping("/register")
+    // public ResponseEntity<?> registerUser(@RequestBody User user, BindingResult bindingResult) {
+    //     System.out.println("test test register");
+    //     if (bindingResult.hasErrors()) {
+    //         return ResponseEntity.badRequest().body("Invalid user data");
+    //     }
+    //     try {
+    //         userService.signUp(user);
+    //         return ResponseEntity.ok("User registered successfully");
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user: " + e.getMessage());
+    //     }
+    // }
 
     @GetMapping("/upload-picture")
     public String getUploadForm(Model model) {

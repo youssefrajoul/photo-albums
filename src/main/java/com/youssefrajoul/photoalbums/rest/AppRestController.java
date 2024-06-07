@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -117,14 +118,24 @@ public class AppRestController {
 
     @PostMapping("/delete")
     public String deletePicture(@RequestParam String pictureId) {
-        pictureService.deletePicture(Long.parseLong(pictureId));
-        return "redirect:https://localhost:8443/pictures";
+        pictureService.deletePicture(Long.parseLong(pictureId)); 
+        return "redirect:/pictures";
     }
 
-    @GetMapping("../login")
-    public String getLoginPage(Model model) {
-        return "login";
-    }
     
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user, BindingResult bindingResult) {
+        System.out.println("test test register");
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Invalid user data");
+        }
+        try {
+            userService.signUp(user);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user: " + e.getMessage());
+        }
+    }
 
 }
