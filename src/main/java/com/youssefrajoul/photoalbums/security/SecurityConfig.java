@@ -32,10 +32,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.formLogin(login -> login // Configure form-based login
+                .loginPage("/login")
                 .permitAll()); // Allow access to the login page for everyone
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/departures")).hasAuthority("adm")
-                .requestMatchers(new AntPathRequestMatcher("/departures")).hasAuthority("ope")
+                .requestMatchers(new AntPathRequestMatcher("/departures")).hasAuthority("admin")
                 .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // Ensure /api is protected
                 .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
         http.exceptionHandling(error -> error.accessDeniedPage("/login"));

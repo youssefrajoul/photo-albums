@@ -57,7 +57,7 @@ public class AppController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("student") @Valid User user, BindingResult bindingResult, Model model) {
+    public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
         try {
             userService.signUp(user);
         } catch (Exception e) {
@@ -90,6 +90,12 @@ public class AppController {
         String username = authentication.getName();
         model.addAttribute("albums", albumService.getAlbums(username));
         return "albums";
+    }
+
+    
+    @GetMapping("/login")
+    public String getLoginPage(Model model) {
+        return "login";
     }
 
 }

@@ -23,6 +23,7 @@ import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.Picture;
 import com.youssefrajoul.photoalbums.model.User;
 
+import ch.qos.logback.core.model.Model;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -108,17 +109,22 @@ public class AppRestController {
         }
     }
 
-    @PostMapping("/share")
-    public String sharePicture(@RequestBody String entity) {
-        // TODO: process POST request
+    // @PostMapping("/share")
+    // public String sharePicture(@RequestBody String pictureId) {
 
-        return entity;
-    }
+    //     return entity;
+    // }
 
     @PostMapping("/delete")
     public String deletePicture(@RequestParam String pictureId) {
         pictureService.deletePicture(Long.parseLong(pictureId));
         return "redirect:https://localhost:8443/pictures";
     }
+
+    @GetMapping("../login")
+    public String getLoginPage(Model model) {
+        return "login";
+    }
+    
 
 }
