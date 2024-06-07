@@ -116,10 +116,9 @@ public class AppRestController {
     }
 
     @PostMapping("/delete")
-    public String deletePicture(@RequestBody String entity) {
-        // TODO: process POST request
-
-        return entity;
+    public String deletePicture(@RequestParam String pictureId) {
+        pictureService.deletePicture(Long.parseLong(pictureId));
+        return "redirect:https://localhost:8443/pictures";
     }
 
 }

@@ -34,7 +34,8 @@ public class SecurityConfig {
         http.formLogin(login -> login // Configure form-based login
                 .permitAll()); // Allow access to the login page for everyone
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/private")).hasAuthority("admin")
+                .requestMatchers(new AntPathRequestMatcher("/departures")).hasAuthority("adm")
+                .requestMatchers(new AntPathRequestMatcher("/departures")).hasAuthority("ope")
                 .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // Ensure /api is protected
                 .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
         http.exceptionHandling(error -> error.accessDeniedPage("/login"));

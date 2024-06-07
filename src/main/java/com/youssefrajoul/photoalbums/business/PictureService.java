@@ -102,4 +102,8 @@ public class PictureService {
         }
     }
 
+    public void deletePicture(Long pictureId) {
+        pictureRepository.deleteById(pictureId);
+    }
+
 }
