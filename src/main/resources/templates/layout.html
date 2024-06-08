@@ -28,11 +28,11 @@
                     <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/private}">Private</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/login-form}"
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/login}"
                         sec:authorize="{!isAuthenticated()}">Log In</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/signup-form}"
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/signup}"
                         sec:authorize="{!isAuthenticated()}">Sign Up</a>
                 </li>
                 <li class="nav-item">
