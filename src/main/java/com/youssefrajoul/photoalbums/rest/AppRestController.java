@@ -1,14 +1,19 @@
 package com.youssefrajoul.photoalbums.rest;
 
 import java.util.Base64;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +30,8 @@ import com.youssefrajoul.photoalbums.model.Picture;
 import com.youssefrajoul.photoalbums.model.User;
 
 import ch.qos.logback.core.model.Model;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -43,6 +50,8 @@ public class AppRestController {
     private AlbumService albumService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPicture(@RequestParam("file") MultipartFile file, @RequestParam String albumId) {
@@ -94,7 +103,7 @@ public class AppRestController {
     }
 
     @PostMapping("/create-album")
-    public ResponseEntity<?> postMethodName(@RequestParam String albumName) {
+    public ResponseEntity<?> createAlbum(@RequestParam String albumName) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
@@ -113,19 +122,17 @@ public class AppRestController {
     // @PostMapping("/share")
     // public String sharePicture(@RequestBody String pictureId) {
 
-    //     return entity;
+    // return entity;
     // }
 
     @PostMapping("/delete")
     public String deletePicture(@RequestParam String pictureId) {
-        pictureService.deletePicture(Long.parseLong(pictureId)); 
+        pictureService.deletePicture(Long.parseLong(pictureId));
         return "redirect:/pictures";
     }
 
-    
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user, BindingResult bindingResult) {
-        System.out.println("test test register");
+    @PostMapping("/signup-request")
+    public ResponseEntity<?> signUpUser(@RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body("Invalid user data");
         }
@@ -134,8 +141,40 @@ public class AppRestController {
             return ResponseEntity.ok("User registered successfully");
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to register user: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/login-request")
+    public ResponseEntity<?> logInUser(@RequestBody User user) {
+        try {
+            // Create an authentication token
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user.getUsername(), user.getPassword());
+            
+            // Authenticate the user
+            Authentication authentication = authenticationManager.authenticate(authToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("test test test login    " + authToken.toString());
+            // Return success response
+            return ResponseEntity.ok("User logged in successfully");
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to log in user: " + e.getMessage());
+        }
+    }
+
+    private String generateToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
     }
 
 }

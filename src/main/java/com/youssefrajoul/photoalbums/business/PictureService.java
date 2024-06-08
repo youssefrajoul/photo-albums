@@ -59,7 +59,8 @@ public class PictureService {
             User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
 
             // Decrypt user's private key
-            String encryptedPrivateKey = user.getEncryptedPrivateKey();
+            // String encryptedPrivateKey = user.getEncryptedPrivateKey();
+            String encryptedPrivateKey = null;
             byte[] salt = user.getSalt().getBytes();
             String decryptedPrivateKeyString = EncryptionUtil.decryptPrivateKey(encryptedPrivateKey, password, salt);
             PrivateKey privateKey = EncryptionUtil.stringToPrivateKey(decryptedPrivateKeyString);

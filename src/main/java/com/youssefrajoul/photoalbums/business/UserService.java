@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,30 +28,33 @@ public class UserService {
 
     @Transactional
     public void signUp(User user) throws Exception {
-        // Generate the KeyPair
-        KeyPair keyPair = KeyPairUtil.generateRSAKeyPair();
-        String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        String privateKey = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+        // Check if the user already exists
+        if (userRepository.findById(user.getUsername()).isPresent()) {
+            throw new Exception("User with username " + user.getUsername() + " already exists.");
+        }
 
         // Generate a salt and encrypt the private key with the user's password
-        byte[] salt = EncryptionUtil.generateSalt();
-        // String encryptedPrivateKey = EncryptionUtil.encryptPrivateKey(privateKey,
-        // user.getPassword(), salt);
+        try {
+            byte[] salt = EncryptionUtil.generateSalt();
+            // Store the public key, encrypted private key, and salt in the database
+            User newUser = new User();
+            newUser.setUsername(user.getUsername());
+            newUser.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password with BCrypt
+            newUser.setPublicKey(user.getPublicKey());
+            newUser.setEnabled(true);
+            newUser.setSalt(Base64.getEncoder().encodeToString(salt));
 
-        // Store the public key, encrypted private key, and salt in the database
-        User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password with BCrypt
-        newUser.setPublicKey(publicKey);
-        // newUser.setEncryptedPrivateKey(encryptedPrivateKey);
-        newUser.setEncryptedPrivateKey(privateKey);
-        newUser.setEnabled(true);
-        newUser.setSalt(Base64.getEncoder().encodeToString(salt));
-        userRepository.save(newUser);
-        Authority authority = new Authority();
-        authority.setUsername(newUser.getUsername());
-        authority.setAuthority("user");
-        authorityRepository.save(authority);
+            userRepository.save(newUser);
+
+            Authority authority = new Authority();
+            authority.setUsername(newUser.getUsername());
+            authority.setAuthority("user");
+            authorityRepository.save(authority);
+        } catch (DataIntegrityViolationException e) {
+            throw new Exception("Failed to sign up user: " + e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("An unexpected error occurred: " + e.getMessage());
+        }
     }
 
 }

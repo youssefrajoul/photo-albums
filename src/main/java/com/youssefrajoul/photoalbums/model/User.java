@@ -26,8 +26,6 @@ public class User {
     private boolean enabled;
     @Column(columnDefinition = "LONGTEXT")
     private String publicKey;
-    @Column(columnDefinition = "LONGTEXT")
-    private String encryptedPrivateKey;
     private String salt;
     @OneToMany(mappedBy = "username")
     private List<Picture> pictures;

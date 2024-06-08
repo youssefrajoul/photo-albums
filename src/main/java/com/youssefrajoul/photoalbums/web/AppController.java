@@ -51,10 +51,10 @@ public class AppController {
         return "private";
     }
 
-    @GetMapping("/register-form")
-    public String showRegistrationForm(Model model) {
+    @GetMapping("/signup")
+    public String showSignUpForm(Model model) {
         model.addAttribute("user", new User());
-        return "register-form";
+        return "signup-form";
     }
 
     // @PostMapping("/register")
@@ -99,8 +99,8 @@ public class AppController {
 
     
     @GetMapping("/login")
-    public String getLoginPage(Model model) {
-        return "login";
+    public String showLoginForm(Model model) {
+        return "login-form";
     }
 
 }
