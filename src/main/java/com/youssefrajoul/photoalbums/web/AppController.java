@@ -51,26 +51,16 @@ public class AppController {
         return "private";
     }
 
+    @GetMapping("/login")
+    public String showLoginForm(Model model) {
+        return "login-form";
+    }
+
     @GetMapping("/signup")
     public String showSignUpForm(Model model) {
         model.addAttribute("user", new User());
         return "signup-form";
     }
-
-    // @PostMapping("/register")
-    // public ResponseEntity<?> registerUser(@RequestBody User user, BindingResult bindingResult) {
-    //     System.out.println("test test register");
-    //     if (bindingResult.hasErrors()) {
-    //         return ResponseEntity.badRequest().body("Invalid user data");
-    //     }
-    //     try {
-    //         userService.signUp(user);
-    //         return ResponseEntity.ok("User registered successfully");
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user: " + e.getMessage());
-    //     }
-    // }
 
     @GetMapping("/upload-picture")
     public String getUploadForm(Model model) {
@@ -95,12 +85,6 @@ public class AppController {
         String username = authentication.getName();
         model.addAttribute("albums", albumService.getAlbums(username));
         return "albums";
-    }
-
-    
-    @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        return "login-form";
     }
 
 }

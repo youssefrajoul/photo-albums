@@ -1,22 +1,15 @@
 package com.youssefrajoul.photoalbums.rest;
 
 import java.util.Base64;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,23 +22,17 @@ import com.youssefrajoul.photoalbums.business.AlbumService;
 import com.youssefrajoul.photoalbums.business.PictureService;
 import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.Picture;
-import com.youssefrajoul.photoalbums.model.User;
 
-import ch.qos.logback.core.model.Model;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "/api")
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppRestController {
-
+public class PictureRestController {
     @Autowired
     private PictureService pictureService;
     @Autowired
@@ -54,13 +41,6 @@ public class AppRestController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    // @Value("${jwt.secret}")
-    private String jwtSecret;
-
-    // @Value("${jwt.expirationMs}")
-    private long jwtExpirationMs;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPicture(@RequestParam("file") MultipartFile file, @RequestParam String albumId) {
@@ -139,53 +119,4 @@ public class AppRestController {
         pictureService.deletePicture(Long.parseLong(pictureId));
         return "redirect:/pictures";
     }
-
-    @PostMapping("/signup-request")
-    public ResponseEntity<?> signUpUser(@RequestBody User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("Invalid user data");
-        }
-        try {
-            userService.signUp(user);
-            return ResponseEntity.ok("User registered successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to register user: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/login-request")
-    public ResponseEntity<?> logInUser(@RequestBody User user) {
-        try {
-            // Create an authentication token
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword());
-            
-           // Generate JWT token
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-            String token = generateToken(userDetails);
-
-            // Return success response with token
-            return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("User logged in successfully");
-            // Return success response
-            // return ResponseEntity.ok("User logged in successfully");
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to log in user: " + e.getMessage());
-        }
-    }
-
-    private String generateToken(UserDetails userDetails) {
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
-
 }

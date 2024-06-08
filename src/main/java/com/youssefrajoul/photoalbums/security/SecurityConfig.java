@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,12 +35,19 @@ public class SecurityConfig {
         http.formLogin(login -> login // Configure form-based login
                 .loginPage("/login")
                 .permitAll()); // Allow access to the login page for everyone
-        http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(new AntPathRequestMatcher("/private")).hasAuthority("admin")
-                // .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated() // Ensure /api is protected
-                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(new AntPathRequestMatcher("/private")).hasAuthority("admin")
+                        .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+                .httpBasic(withDefaults -> {
+                }); // Enable Basic Authentication
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(error -> error.accessDeniedPage("/login"));
         http.logout(logout -> logout.logoutSuccessUrl("/"));
+        http.sessionManagement(sessionManagement -> sessionManagement
+                .sessionFixation().migrateSession()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
         return http.build();
     }
 
@@ -56,7 +64,9 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**")).requestMatchers(new AntPathRequestMatcher("/api/**"));
+        return (web) -> web.ignoring()
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .requestMatchers(new AntPathRequestMatcher("/api/**"));
     }
 
     @Bean
