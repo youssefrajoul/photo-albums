@@ -38,7 +38,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(new AntPathRequestMatcher("/private")).hasAuthority("admin")
-                        .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
+                        // .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .httpBasic(withDefaults -> {
                 }); // Enable Basic Authentication
