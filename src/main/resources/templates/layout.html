@@ -5,13 +5,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Document</title>
     <meta name="author" content="">
-	<title>Please sign in</title>
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-   
+    <title>Please sign in</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="/js/main.js"></script>
+
 </head>
 
 <body>
@@ -25,30 +28,35 @@
                     <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/private}">Private</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/login}" sec:authorize="{!isAuthenticated()}">Login</a>
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/login}"
+                        sec:authorize="{!isAuthenticated()}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/signup}" sec:authorize="{!isAuthenticated()}">Register</a>
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/signup}"
+                        sec:authorize="{!isAuthenticated()}">Register</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/logout}" sec:authorize="isAuthenticated()">Logout</a>
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/logout}"
+                        sec:authorize="isAuthenticated()">Logout</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/upload-picture}"
                         sec:authorize="isAuthenticated()">Upload Picture</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/pictures}" sec:authorize="isAuthenticated()">My Pictures</a>
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/pictures}"
+                        sec:authorize="isAuthenticated()">My Pictures</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/albums}" sec:authorize="isAuthenticated()">My Albums</a>
+                    <a class="nav-link" href="https://poesi.esi-bru.be/my/" th:href="@{/albums}"
+                        sec:authorize="isAuthenticated()">My Albums</a>
                 </li>
                 <li class="nav-item">
                     <div class="nav-link" sec:authentication="name">anonymos</div>
                 </li>
             </ul>
         </nav>
-        
+
     </header>
     <main layout:fragment="content">
         Ce contenu sera remplacé par le vrai.

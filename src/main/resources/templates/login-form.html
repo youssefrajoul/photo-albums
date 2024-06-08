@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="utf-8">
+    <title>Login</title>
 
 </head>
 
@@ -11,7 +12,7 @@
     <main layout:fragment="content">
 
         <div class="container">
-            <form class="form-signin" method="post" th:action="@{/api/login-request}">
+            <form>
                 <h2 class="form-signin-heading">Please log in</h2>
                 <p>
                     <label for="username" class="sr-only">Username:</label>
@@ -25,7 +26,7 @@
                 </p>
                 <input name="_csrf" type="hidden"
                     value="Rzp_UzpruNaEzFUvhXzJdSk6jVgx1m6ZgM0O-njbE9hQIdk8dAsbZgtf2--pr21OsFH9QRhZoGAI5ly0tfhrw0HvcO5mQ7oN" />
-                <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+                <button id="btn-login" class="btn btn-lg btn-primary" type="button">Sign in</button>
             </form>
         </div>
     </main>

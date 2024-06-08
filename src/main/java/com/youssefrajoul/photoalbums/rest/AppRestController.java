@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +54,13 @@ public class AppRestController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    // @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    // @Value("${jwt.expirationMs}")
+    private long jwtExpirationMs;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPicture(@RequestParam("file") MultipartFile file, @RequestParam String albumId) {
@@ -153,12 +162,14 @@ public class AppRestController {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     user.getUsername(), user.getPassword());
             
-            // Authenticate the user
-            Authentication authentication = authenticationManager.authenticate(authToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("test test test login    " + authToken.toString());
+           // Generate JWT token
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            String token = generateToken(userDetails);
+
+            // Return success response with token
+            return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("User logged in successfully");
             // Return success response
-            return ResponseEntity.ok("User logged in successfully");
+            // return ResponseEntity.ok("User logged in successfully");
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         } catch (Exception e) {
