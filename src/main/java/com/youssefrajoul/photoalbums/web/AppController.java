@@ -3,17 +3,12 @@ package com.youssefrajoul.photoalbums.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.youssefrajoul.photoalbums.business.AlbumService;
 import com.youssefrajoul.photoalbums.business.PictureService;
@@ -21,12 +16,9 @@ import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.Picture;
 import com.youssefrajoul.photoalbums.model.User;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Data
@@ -45,6 +37,11 @@ public class AppController {
     public String home(Model model) {
         return "index";
     }
+
+    @GetMapping("/hello")
+	public String firstPage() {
+		return new String("Hello World");
+	}
 
     @GetMapping("/private")
     public String getPrivate() {
@@ -71,12 +68,23 @@ public class AppController {
     }
 
     @GetMapping("/pictures")
-    public String viewPictures(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String viewPictures(Model model, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            // Redirect to login page if user is not authenticated
+            return "redirect:/login";
+        }
+        // Check if authentication is via Basic Authentication
+        if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
+            // Handle other types of authentication (e.g., JWT)
+            return "redirect:/login";
+        }
+        // Authentication is via Basic Authentication
         String username = authentication.getName();
         List<Picture> pictures = pictureService.retrieveAllPictures(username);
         model.addAttribute("pictures", pictures);
-        return "pictures";
+
+        // Return the HTML file with pictures
+        return "pictures"; // Assuming pictures.html exists in your templates directory
     }
 
     @GetMapping("/albums")

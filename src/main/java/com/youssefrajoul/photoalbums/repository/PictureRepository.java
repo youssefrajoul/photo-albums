@@ -8,5 +8,5 @@ import com.youssefrajoul.photoalbums.model.User;
 import java.util.List;
 
 public interface PictureRepository extends CrudRepository<Picture, Long> {
-    List<Picture> findByUsername(User username);
+    List<Picture> findByOwner(User owner);
 }

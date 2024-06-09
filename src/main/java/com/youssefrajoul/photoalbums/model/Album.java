@@ -24,8 +24,8 @@ public class Album {
     private Long id;
     private String name;
     @ManyToOne()
-    @JoinColumn(name = "username")
-    private User username;
+    @JoinColumn(name = "owner")
+    private User owner;
     @OneToMany(mappedBy = "album")
     private List<Picture> pictures;
 }

@@ -27,8 +27,8 @@ public class User {
     @Column(columnDefinition = "LONGTEXT")
     private String publicKey;
     private String salt;
-    @OneToMany(mappedBy = "username")
+    @OneToMany(mappedBy = "owner")
     private List<Picture> pictures;
-    @OneToMany(mappedBy = "username")
+    @OneToMany(mappedBy = "owner")
     private List<Album> albums;
 }

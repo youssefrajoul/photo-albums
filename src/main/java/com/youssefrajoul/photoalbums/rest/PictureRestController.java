@@ -24,12 +24,13 @@ import com.youssefrajoul.photoalbums.business.UserService;
 import com.youssefrajoul.photoalbums.model.Picture;
 
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/picture")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PictureRestController {
@@ -43,29 +44,36 @@ public class PictureRestController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadPicture(@RequestParam("file") MultipartFile file, @RequestParam String albumId) {
+    public ResponseEntity<?> uploadPicture(@RequestParam("file") MultipartFile file,
+            @RequestParam String albumId,
+            HttpServletRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
-            if (!albumService.getAlbum(Long.parseLong(albumId)).getUsername().getUsername().equals(username)) {
+            if (!albumService.getAlbum(Long.parseLong(albumId)).getOwner().getUsername().equals(username)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
             }
+
+            // Check if the file is empty or blank
             if (file.isEmpty() || StringUtils.isBlank(file.getOriginalFilename())) {
-                return ResponseEntity.status(HttpStatus.SEE_OTHER).header("Location", "/upload").body("Invalid file");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid file");
             }
+
+            // Store the picture
             byte[] imageBytes = file.getBytes();
             String fileName = file.getOriginalFilename();
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
             pictureService.storeEncryptedPicture(base64Image, fileName, Long.parseLong(albumId), username);
-            return ResponseEntity.status(HttpStatus.SEE_OTHER).header("Location", "/pictures")
-                    .body("Picture uploaded successfully.");
+
+            // Return success response
+            return ResponseEntity.ok("Picture uploaded successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to upload picture: " + e.getMessage());
         }
     }
 
-    @GetMapping("/picture")
+    @GetMapping("/download")
     public ResponseEntity<?> fetchPicture(@RequestParam Long pictureId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,9 +122,9 @@ public class PictureRestController {
     // return entity;
     // }
 
-    @PostMapping("/delete")
-    public String deletePicture(@RequestParam String pictureId) {
-        pictureService.deletePicture(Long.parseLong(pictureId));
-        return "redirect:/pictures";
-    }
+    // @PostMapping("/delete")
+    // public String deletePicture(@RequestParam String pictureId) {
+    //     pictureService.deletePicture(Long.parseLong(pictureId));
+    //     return "redirect:/pictures";
+    // }
 }

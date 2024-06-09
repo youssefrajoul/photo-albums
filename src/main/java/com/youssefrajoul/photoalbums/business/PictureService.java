@@ -40,7 +40,7 @@ public class PictureService {
             // Create a new Picture object
             Picture newPicture = new Picture();
             newPicture.setName(fileName);
-            newPicture.setUsername(user);
+            newPicture.setOwner(user);
             newPicture.setData(picture);
             newPicture.setAlbum(albumRepository.findById(albumId).get());
             // Save the new picture in the repository
@@ -66,11 +66,11 @@ public class PictureService {
             PrivateKey privateKey = EncryptionUtil.stringToPrivateKey(decryptedPrivateKeyString);
 
             // Fetch pictures for the user
-            List<Picture> pictures = pictureRepository.findByUsername(user);
+            List<Picture> pictures = pictureRepository.findByOwner(user);
 
             // Decrypt pictures
             for (Picture picture : pictures) {
-                String decryptedPicture = PictureEncryptionUtil.decrypt(picture.getEncryptedPicture().getBytes(),
+                String decryptedPicture = PictureEncryptionUtil.decrypt(picture.getData().getBytes(),
                         EncryptionUtil.stringToPrivateKey(encryptedPrivateKey));
                 decryptedPictures.add(decryptedPicture);
             }
@@ -84,14 +84,14 @@ public class PictureService {
 
     public List<Picture> retrieveAllPictures(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
-        return pictureRepository.findByUsername(user);
+        return pictureRepository.findByOwner(user);
     }
 
     public Picture retrieveEncryptedPicture(Long pictureId, String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
         // return pictureRepository.findById(pictureId).get();
         try {
-            if (pictureRepository.findByUsername(user)
+            if (pictureRepository.findByOwner(user)
                     .contains(pictureRepository.findById(pictureId).get())) {
                 return pictureRepository.findById(pictureId).get();
             } else {

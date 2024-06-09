@@ -19,14 +19,14 @@ public class AlbumService {
 
     public List<Album> getAlbums(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
-        return albumRepository.findByUsername(user);
+        return albumRepository.findByOwner(user);
     }
 
     public void createAlbum(String albumName, String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
         Album album = new Album();
         album.setName(albumName);
-        album.setUsername(user);
+        album.setOwner(user);
         albumRepository.save(album);
     }
 
